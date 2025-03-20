@@ -20,3 +20,5 @@ spec:
           value: "redis-master"
         - name: REDIS_PORT
           value: "6379"
+        - name: REDIS_CHANNEL
+          value: "logs"
