@@ -20,3 +20,8 @@ spec:
         env:
         - name: PORT
           value: "80"
+        - name: VUE_APP_AUTH_API_URL
+          value: "http://ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com/api/auth"
+        - name: VUE_APP_TODOS_API_URL
+          value: "http://ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com/api/todos"
+

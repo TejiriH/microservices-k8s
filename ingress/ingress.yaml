@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com  # Change this if you have a domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+      - path: /api/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-api
+            port:
+              number: 8081
+      - path: /api/todos
+        pathType: Prefix
+        backend:
+          service:
+            name: todos-api
+            port:
+              number: 8082
