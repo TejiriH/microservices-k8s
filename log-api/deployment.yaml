@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: log-message-processor
-        image: tejirih/log-imager:latest
+        image: tejirih/log-image:latest
         env:
         - name: REDIS_HOST
           value: "redis-master"
