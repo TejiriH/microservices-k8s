@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: "https://github.com/TejiriH/microservices-k8s.git"  # Update this
     targetRevision: main
-    path: "."  # Path where your YAML files are stored
+    path: manifests  # Path where your YAML files are stored
   destination:
     server: https://kubernetes.default.svc
     namespace: default

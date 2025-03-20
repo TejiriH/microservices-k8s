@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-message-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-message-processor
+  template:
+    metadata:
+      labels:
+        app: log-message-processor
+    spec:
+      containers:
+      - name: log-message-processor
+        image: tejirih/log-imager:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-master"
+        - name: REDIS_PORT
+          value: "6379"
