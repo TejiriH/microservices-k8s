@@ -23,7 +23,7 @@ spec:
         - name: AUTH_API_PORT
           value: "8081"  # Ensure this is set correctly
         - name: REDIS_HOST
-          value: "redis-master"  # Redis service name
+          value: "redis"  # Redis service name
         - name: REDIS_PORT
           value: "6379"  # Ensure it's the correct port
 
