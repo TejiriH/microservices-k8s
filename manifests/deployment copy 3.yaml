@@ -26,4 +26,10 @@ spec:
               value: "6379"
             - name: AUTH_API_ADDRESS  # 👈 Ensure it points to auth-api
               value: "http://auth-api:8081"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+
 

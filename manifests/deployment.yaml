@@ -22,4 +22,10 @@ spec:
               value: "8081"
             - name: USERS_API_ADDRESS  # 👈 Ensure this points to users-api
               value: "http://users-api:8083"  
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+
 
