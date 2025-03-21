@@ -2,13 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: microservices-ingress
-  namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
-  - host: ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com  # Change this if you have a domain
+  - host: ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com
     http:
       paths:
       - path: /
@@ -18,17 +17,27 @@ spec:
             name: frontend
             port:
               number: 80
-      - path: /api/auth
+      - path: /api/auth(/|$)(.*)
+        pathType: ImplementationSpecific  # ✅ Use ImplementationSpecific for regex paths
+        backend:
+          service:
+            name: auth-api
+            port:
+              number: 8081
+      - path: /api/todos(/|$)(.*)
+        pathType: ImplementationSpecific  # ✅ Use ImplementationSpecific for regex paths
+        backend:
+          service:
+            name: todos-api
+            port:
+              number: 8082
+      - path: /login
         pathType: Prefix
         backend:
           service:
             name: auth-api
             port:
               number: 8081
-      - path: /api/todos
-        pathType: Prefix
-        backend:
-          service:
-            name: todos-api
-            port:
-              number: 8082
+
+
+

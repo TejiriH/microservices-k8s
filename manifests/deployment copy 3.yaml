@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: todos-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: todos-api
@@ -13,13 +13,30 @@ spec:
         app: todos-api
     spec:
       containers:
-      - name: todos-api
-        image: tejirih/todos-image:latest
-        ports:
-        - containerPort: 8082
+        - name: todos-api
+          image: tejirih/todos-image:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: TODOS_API_PORT
+              value: "8082"
+            - name: REDIS_HOST  # 👈 Ensure it points to Redis
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: AUTH_API_ADDRESS  # 👈 Ensure it points to auth-api
+              value: "http://auth-api:8081"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      initContainers:
+        - name: wait-for-auth-api
+          image: busybox
+          command: ['sh', '-c', 'until wget -qO- http://auth-api:8081/version; do echo waiting for auth-api; sleep 5; done']
+        - name: wait-for-redis
+          image: busybox
+          command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 5; done']
 
-        env:
-        - name: REDIS_HOST
-          value: "redis"
-        - name: REDIS_PORT
-          value: "6379"

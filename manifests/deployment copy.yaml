@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -13,15 +13,20 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: tejirih/frontend:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: PORT
-          value: "80"
-        - name: VUE_APP_AUTH_API_URL
-          value: "http://ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com/api/auth"
-        - name: VUE_APP_TODOS_API_URL
-          value: "http://ab4f2d93de14747c08fb177fee599c62-1239834500.eu-north-1.elb.amazonaws.com/api/todos"
+        - name: frontend
+          image: tejirih/frontend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REACT_APP_AUTH_API
+              value: "http://auth-api:8081"
+            - name: REACT_APP_TODOS_API
+              value: "http://todos-api:8082"
+      initContainers:
+        - name: wait-for-auth-api
+          image: busybox
+          command: ['sh', '-c', 'until wget -qO- http://auth-api:8081/version; do echo waiting for auth-api; sleep 5; done']
+        - name: wait-for-todos-api
+          image: busybox
+          command: ['sh', '-c', 'until wget -qO- http://todos-api:8082/health; do echo waiting for todos-api; sleep 5; done']
 

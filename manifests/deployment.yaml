@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-api
-  labels:
-    app: auth-api
 spec:
   replicas: 1
   selector:
@@ -15,15 +13,24 @@ spec:
         app: auth-api
     spec:
       containers:
-      - name: auth-api
-        image: tejirih/auth-image:latest
-        ports:
-        - containerPort: 8081
-        env:
-        - name: AUTH_API_PORT
-          value: "8081"  # Ensure this is set correctly
-        - name: REDIS_HOST
-          value: "redis"  # Redis service name
-        - name: REDIS_PORT
-          value: "6379"  # Ensure it's the correct port
+        - name: auth-api
+          image: tejirih/auth-image:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: AUTH_API_PORT
+              value: "8081"
+            - name: USERS_API_ADDRESS  # 👈 Ensure this points to users-api
+              value: "http://users-api:8083"  
+          readinessProbe:  # 👈 Ensures auth-api starts only when it's ready
+            httpGet:
+              path: /version
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      initContainers:  # 👈 Wait for users-api before starting
+        - name: wait-for-users-api
+          image: busybox
+          command: ['sh', '-c', 'until wget -qO- http://users-api:8083/version; do echo waiting for users-api; sleep 5; done']
+
 
