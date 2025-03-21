@@ -26,17 +26,4 @@ spec:
               value: "6379"
             - name: AUTH_API_ADDRESS  # 👈 Ensure it points to auth-api
               value: "http://auth-api:8081"
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8082
-            initialDelaySeconds: 5
-            periodSeconds: 10
-      initContainers:
-        - name: wait-for-auth-api
-          image: busybox
-          command: ['sh', '-c', 'until wget -qO- http://auth-api:8081/version; do echo waiting for auth-api; sleep 5; done']
-        - name: wait-for-redis
-          image: busybox
-          command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 5; done']
 

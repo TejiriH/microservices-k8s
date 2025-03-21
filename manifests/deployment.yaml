@@ -22,15 +22,4 @@ spec:
               value: "8081"
             - name: USERS_API_ADDRESS  # 👈 Ensure this points to users-api
               value: "http://users-api:8083"  
-          readinessProbe:  # 👈 Ensures auth-api starts only when it's ready
-            httpGet:
-              path: /version
-              port: 8081
-            initialDelaySeconds: 5
-            periodSeconds: 10
-      initContainers:  # 👈 Wait for users-api before starting
-        - name: wait-for-users-api
-          image: busybox
-          command: ['sh', '-c', 'until wget -qO- http://users-api:8083/version; do echo waiting for users-api; sleep 5; done']
-
 

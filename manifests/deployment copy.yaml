@@ -22,11 +22,4 @@ spec:
               value: "http://auth-api:8081"
             - name: REACT_APP_TODOS_API
               value: "http://todos-api:8082"
-      initContainers:
-        - name: wait-for-auth-api
-          image: busybox
-          command: ['sh', '-c', 'until wget -qO- http://auth-api:8081/version; do echo waiting for auth-api; sleep 5; done']
-        - name: wait-for-todos-api
-          image: busybox
-          command: ['sh', '-c', 'until wget -qO- http://todos-api:8082/health; do echo waiting for todos-api; sleep 5; done']
 
